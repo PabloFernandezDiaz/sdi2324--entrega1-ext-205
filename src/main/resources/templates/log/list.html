@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="fragments/head"/>
+<body>
+<!-- Barra de Navegación superior -->
+<nav th:replace="fragments/nav"/>
+<div class="container">
+  <h2 th:text = "#{log.title}"></h2>
+  <p th:text = "#{log.desc}"></p>
+  <button th:text="#{log.update}" type="button" id="updateButton" class="btn btn-primary"></button>
+  <br>
+  <script>
+    $( "#updateButton" ).click(function() {
+      var logType = $("#logType").val()
+      $("#logTable").load('/admin/log/update?logType='+logType);
+    });
+  </script>
+
+
+  <div class="table-responsive">
+
+    <form id="logSearchForm" method="get" action="/admin/log">
+      <div class="form-group">
+        <label for="logType" th:text = "#{log.filter}">:</label>
+        <select class="form-control" id="logType" name="logType" onchange="this.form.submit()">
+          <option th:selected="${type == prevRole}" th:each="type : ${logTypes}"  th:value="${type}" th:text = "${type}" >
+          </option>
+        </select>
+      </div>
+    </form>
+    <button th:text="#{log.del}" type="button" id="deleteButton" class="btn btn-danger"></button>
+<!--    <form id="deleteForm" action="/admin/log/delete" method="get">-->
+<!--      <button type="submit" class="btn btn-danger" id="deleteButton" th:text="#{log.del}"></button>-->
+<!--    </form>-->
+    <script>
+      $( "#deleteButton" ).click(function() {
+        var logType = $("#logType").val()
+        $("#logTable").load('/admin/log/delete?logType='+logType);
+      });
+    </script>
+      <table class="table table-hover" th:fragment="logTable" id="logTable">
+        <thead>
+        <tr>
+          <th scope="col" th:text="#{log.date}"></th>
+          <th scope="col" th:text="#{log.type}"></th>
+          <th scope="col" th:text="#{log.content}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry : ${log}">
+          <td th:text="${entry.date}"></td>
+          <td th:text="${entry.loggerType}"></td>
+          <td th:text="${entry.description}"></td>
+        </tr>
+        </tbody>
+      </table>
+        <div th:if="${#lists.isEmpty(log)}" th:text="#{log.empty}"></div>
+<!--      <footer th:replace="fragments/pagination"></footer>-->
+    </form>
+
+  </div>
+</div>
+<footer th:replace="fragments/footer"/>
+</body>
+</html>

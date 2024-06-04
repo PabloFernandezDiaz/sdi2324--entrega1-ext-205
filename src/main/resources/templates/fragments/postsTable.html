@@ -1,0 +1,20 @@
+<table class="table table-hover" th:fragment="postsTable" id="postsTable"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras- springsecurity4">
+    <thead>
+    <tr>
+        <th scope="col"><span th:text="#{post.list.date}"></span></th>
+        <th scope="col"><span th:text="#{post.list.title}"></span></th>
+        <th scope="col"><span th:text="#{post.list.description}"></span></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${postsList}">
+        <td th:text="${post.date}"></td>
+        <td th:text="${post.title}"></td>
+        <td th:text="${post.description}"></td>
+    </tr>
+    </tbody>
+</table>
+<div th:if="${#lists.isEmpty(postsList)}">
+    <span th:text="#{post.list.empty}"></span>
+</div>

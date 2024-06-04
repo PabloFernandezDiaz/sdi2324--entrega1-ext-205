@@ -1,0 +1,95 @@
+<!-- nav.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary"
+     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity4">
+  <a class="navbar-brand" href="#"></a>
+  <img src="/images/student-48.png" alt="logo"/>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar"
+          aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="navbar-nav mr-auto" >
+      <li class="nav-item " sec:authorize="isAuthenticated()" >
+        <a class="nav-link" href="/home">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="btnPost" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <span th:text="#{post.nav}"></span>
+        </a>
+        <div id="postDropDownMenu" class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" id="btnMisPosts" href="/post/list">
+            <span th:text="#{post.nav.list}"></span>
+          </a>
+          <a class="dropdown-item" id="btnPublicar" href="/post/add">
+            <span th:text="#{post.nav.add}"></span>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item "sec:authorize="hasRole('ROLE_STANDARD')" >
+        <a class="nav-link" href="/user/list" th:text="#{nav.ver.usuarios}"><span class="sr-only">(current)</span></a>
+      </li>
+        <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+               th:text="#{user.manager}" aria-haspopup="true" aria-expanded="false">Gestión de usuarios
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                <a th:text="#{user.listMenu}"  class="dropdown-item"  href="/admin/user/list" id="adminUserList">Ver usuarios</a>
+            </div>
+        </li>
+      <li  class="nav-item dropdown" sec:authorize="isAuthenticated()">
+        <a class="nav-link dropdown-toggle" href="#" id="frienshipDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false" th:text="#{friendship}">
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/friendship/request/list" th:text="#{friendship.requests}" ></a>
+          <a class="dropdown-item" href="/friendship/list" th:text="#{friendship.friends}" ></a>
+        </div>
+      </li>
+      <li class="nav-item "  sec:authorize="hasRole('ROLE_ADMIN')" >
+        <a th:text = "#{log.log}" class="nav-link" href="/admin/log "></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav justify-content-end">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="btnLanguage" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <span th:text="#{language.change}"></span>
+        </a>
+        <div id="languageDropdownMenuButton" class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" id="btnEnglish" value="EN">
+            <img th:src="@{/images/if_uk_flag.png}" style="border: 0; float: left; margin-right: 15px"/>
+            <span th:text="#{language.en}">Inglés</span>
+          </a>
+          <a class="dropdown-item" id="btnSpanish" value="ES">
+            <img th:src="@{/images/if_spain_flag.png}" style="border: 0; float: left; margin-right: 15px"/>
+            <span th:text="#{language.es}">Español</span>
+          </a>
+        </div>
+      </li>
+      <li sec:authorize="!isAuthenticated()" class="nav-item">
+        <a class="nav-link" href="/signup">
+          <i class='fas fa-user-alt' style='font-size:16px'></i>
+          <span th:text="#{signup.message}"></span>
+        </a>
+      </li>
+      <li  sec:authorize="!isAuthenticated()" class="nav-item">
+        <a class="nav-link" href="/login">
+          <i class='fas fa-sign-in-alt' style='font-size:16px'></i>
+          <span th:text="#{login.message}"></span>
+        </a>
+      </li>
+      <li sec:authorize="isAuthenticated()" class="nav-item">
+        <a class="nav-link" href="/logout">
+          <i class='fas fa-sign-out-alt' style='font-size:16px'></i>
+          <span th:text="#{logout.message}"></span>
+        </a>
+      </li>
+
+    </ul>
+    <!--<form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+    </form> -->
+  </div>
+</nav>
