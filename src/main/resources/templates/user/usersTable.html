@@ -1,0 +1,51 @@
+<table class="table table-hover" th:fragment="usersTable" id="usersTable"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <thead>
+    <tr>
+      <th scope="col" th:text="#{user.email}"></th>
+      <th scope="col" th:text="#{user.name}"></th>
+      <th scope="col" th:text="#{user.lastname}"></th>
+      <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col" th:text="#{user.role}"></th>
+      <th sec:authorize="hasRole('ROLE_STANDARD')" scope="col"></th>
+      <th  scope="col"></th>
+      <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col">
+      <th sec:authorize="hasRole('ROLE_ADMIN')"  scope="col">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="selectAll" />
+          <label class="form-check-label" for="selectAll" th:text="#{user.deleteAll}"></label>
+        </div>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${usersList}">
+      <td th:text="${user.email}">email</td>
+      <td th:text="${user.name}">nombre</td>
+      <td th:text="${user.lastName}">Apellidos del alumno</td>
+      <td sec:authorize="hasRole('ROLE_ADMIN')" th:text="${user.role}">role</td>
+      <td sec:authorize="hasRole('ROLE_STANDARD')">
+        <div>
+          <div th:unless="${user.isSameUser}">
+            <div th:if="${user.hasFriendship}">
+              <div th:if="${user.isAccepted}" th:text="#{user.friend}" ></div>
+              <div th:unless="${user.isAccepted}" th:text ="#{user.sent}"></div>
+            </div>
+            <div th:unless="${user.hasFriendship}">
+              <a th:href="${'/friendship/send/' + user.id}" th:text="#{user.send}"></a>
+            </div>
+
+          </div>
+        </div>
+      </td>
+      <td><a th:href="${'/user/details/' + user.id}" th:text="#{user.details}"></a></td>
+      <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="${'/admin/user/edit/' + user.id}" th:text="#{user.edit}"></a></td>
+      <!--        <td><a th:href="${'/admin/user/delete/' + user.id}" th:text="#{user.delete}"></a></td>-->
+      <td sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" name="usersToDelete" th:value="${user.id}" />
+          <label class="form-check-label"></label>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>

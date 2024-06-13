@@ -4,8 +4,12 @@ package com.uniovi.sdi2324entrega1ext205;
 import com.uniovi.sdi2324entrega1ext205.customHandlers.CustomAuthenFailureHandler;
 import com.uniovi.sdi2324entrega1ext205.customHandlers.CustomAuthenSuccesHandler;
 import com.uniovi.sdi2324entrega1ext205.customHandlers.CustomLogoutHandler;
+import com.uniovi.sdi2324entrega1ext205.customHandlers.CustomUserProfileAccesVoter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +17,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomLogoutHandler customLogoutHandler;
     private final CustomAuthenSuccesHandler customAuthenSuccesHandler;
 
+
+    private final CustomUserProfileAccesVoter customUserProfileAccesVoter;
+
     @Bean
     public SpringSecurityDialect securityDialect() {
         return new SpringSecurityDialect();
@@ -30,13 +40,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     public WebSecurityConfig(CustomAuthenFailureHandler customAuthenFailureHandler, CustomLogoutHandler customLogoutHandler
-            , CustomAuthenSuccesHandler customAuthenSuccesHandler, AuthenticationConfiguration authenticationConfiguration) {
+            , CustomAuthenSuccesHandler customAuthenSuccesHandler, CustomUserProfileAccesVoter customUserProfileAccesVoter, AuthenticationConfiguration authenticationConfiguration) {
         this.customAuthenFailureHandler = customAuthenFailureHandler;
         this.customLogoutHandler = customLogoutHandler;
         this.customAuthenSuccesHandler = customAuthenSuccesHandler;
+        this.customUserProfileAccesVoter = customUserProfileAccesVoter;
         this.authenticationConfiguration = authenticationConfiguration;
     }
 
+    public AccessDecisionManager accessDecisionManager() {
+        List<AccessDecisionVoter<? extends Object>> decisionVoters
+                = Arrays.asList(customUserProfileAccesVoter);
+        return new UnanimousBased(decisionVoters);
+    }
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -53,14 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/css/**", "/images/**", "/script/**", "/", "/signup", "/login/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/post/**").authenticated()
-                .antMatchers("/user/*").authenticated()
+                .antMatchers("/user/*").authenticated()//.accessDecisionManager(accessDecisionManager())
+               //.antMatchers("/user/*").authenticated().
                     .anyRequest().authenticated()
                 .and()
                 .formLogin().failureHandler(customAuthenFailureHandler).successHandler(customAuthenSuccesHandler)
                 .loginPage("/login")
                 .permitAll()
-//                .failureUrl("/login-error")
-//                .defaultSuccessUrl("/home")
                 .and()
                 .logout().logoutSuccessHandler(customLogoutHandler)
                 .permitAll()

@@ -23,14 +23,19 @@ public class User {
         return fullname;
     }
 
-//    @OneToMany(mappedBy = "receiver",cascade = CascadeType.ALL)
-//    private Set<Friendship> receivedFriendships;
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private Set<Friendship> receivedFriendships;
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private Set<Friendship> sentFriendships;
 
     @Transient
     private String passwordConfirm;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Set<Post> posts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OrderBy("date DESC")
+    private Set<Post> posts;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,19 +49,18 @@ public class User {
         return Objects.hash(id);
     }
 
-//    @OneToMany(mappedBy = "sender",cascade = CascadeType.ALL)
-//    private Set<Friendship> sentFriendships;
 
 
 
+    public User() {
+    }
 
-    public User(){}
     public User(Long id, String email, String name, String lastName, String role, String password, String passwordConfirm) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.lastName = lastName;
-        this.fullname= name + " " + lastName;
+        this.fullname = name + " " + lastName;
         this.role = role;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
@@ -66,7 +70,7 @@ public class User {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
-        this.fullname= name + " " + lastName;
+        this.fullname = name + " " + lastName;
         this.role = role;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
@@ -79,21 +83,21 @@ public class User {
         this.role = role;
     }
 
-//    public Set<Friendship> getSentFriendships() {
-//        return sentFriendships;
-//    }
-//
-//    public void setSentFriendships(Set<Friendship> sentFriendships) {
-//        this.sentFriendships = sentFriendships;
-//    }
-//
-//    public Set<Friendship> getReceivedFriendships() {
-//        return receivedFriendships;
-//    }
-//
-//    public void setReceivedFriendship(Set<Friendship> receivedFriendships) {
-//        this.receivedFriendships = receivedFriendships;
-//    }
+    public Set<Friendship> getSentFriendships() {
+        return sentFriendships;
+    }
+
+    public void setSentFriendships(Set<Friendship> sentFriendships) {
+        this.sentFriendships = sentFriendships;
+    }
+
+    public Set<Friendship> getReceivedFriendships() {
+        return receivedFriendships;
+    }
+
+    public void setReceivedFriendship(Set<Friendship> receivedFriendships) {
+        this.receivedFriendships = receivedFriendships;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -152,22 +156,23 @@ public class User {
     }
 
     public void setFullName(String fullName) {
-        this.fullname=fullName;
+        this.fullname = fullName;
     }
-//    public Set<Post> getPosts() {
-//        return posts;
-//    }
-
-//    public void setPosts(Set<Post> posts) {
-//        this.posts = posts;
-//    }
 
 
-//    public Post getLastPost(){
-//        if(posts.isEmpty())
-//            return null;
-//        List<Post> list = new ArrayList<>(posts);
-//        Collections.sort(list, new PostDateComparator());
-//        return list.get(list.size()-1);
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    //    public Post getLastPost(){
+//        return this.posts.isEmpty() ? null : this.posts.iterator().next();
 //    }
+    public Post getLastPost() {
+        return this.posts.isEmpty() ? null : this.posts.iterator().next();
+    }
 }
+

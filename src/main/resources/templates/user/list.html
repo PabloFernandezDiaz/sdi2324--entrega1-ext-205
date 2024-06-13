@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="fragments/head"/>
+<body>
+<!-- Barra de Navegación superior -->
+<nav th:replace="fragments/nav"/>
+<div class="container">
+  <h2 th:text="#{user.list.title}"> </h2>
+  <form class="form-inline" action="/user/list">
+    <div class="form-group">
+      <input name="searchText" type="text" class="form-control" size="50" th:value="${searchText}">
+    </div>
+    <button type="submit" class="btn btn-primary" th:text="#{user.list.search}"></button>
+  </form>
+  <div class="table-responsive">
+    <form th:action="@{/admin/user/deleteMulti}" method="post" th:object="${usersToDelete}">
+<!--      <table class="table table-hover" th:fragment="usersTable" id="usersTable">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th scope="col" th:text="#{user.email}"></th>-->
+<!--          <th scope="col" th:text="#{user.name}"></th>-->
+<!--          <th scope="col" th:text="#{user.lastname}"></th>-->
+<!--          <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col" th:text="#{user.role}"></th>-->
+<!--          <th sec:authorize="hasRole('ROLE_STANDARD')" scope="col"></th>-->
+<!--          <th  scope="col"></th>-->
+<!--          <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col">-->
+<!--          <th sec:authorize="hasRole('ROLE_ADMIN')"  scope="col">-->
+<!--            <div class="form-check">-->
+<!--              <input type="checkbox" class="form-check-input" id="selectAll" />-->
+<!--              <label class="form-check-label" for="selectAll" th:text="#{user.deleteAll}"></label>-->
+<!--            </div>-->
+<!--          </th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="user : ${usersList}">-->
+<!--          <td th:text="${user.email}">email</td>-->
+<!--          <td th:text="${user.name}">nombre</td>-->
+<!--          <td th:text="${user.lastName}">Apellidos del alumno</td>-->
+<!--          <td sec:authorize="hasRole('ROLE_ADMIN')" th:text="${user.role}">role</td>-->
+<!--          <td sec:authorize="hasRole('ROLE_STANDARD')">-->
+<!--            <div>-->
+<!--            <div th:unless="${user.isSameUser}">-->
+<!--              <div th:if="${user.hasFriendship}">-->
+<!--                <div th:if="${user.isAccepted}" th:text="#{user.friend}" ></div>-->
+<!--                <div th:unless="${user.isAccepted}" th:text ="#{user.sent}"></div>-->
+<!--              </div>-->
+<!--              <div th:unless="${user.hasFriendship}">-->
+<!--                <a th:href="${'/friendship/send/' + user.id}" th:text="#{user.send}"></a>-->
+<!--              </div>-->
+
+<!--            </div>-->
+<!--          </div>-->
+<!--          </td>-->
+<!--          <td><a th:href="${'/user/details/' + user.id}" th:text="#{user.details}"></a></td>-->
+<!--          <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="${'/admin/user/edit/' + user.id}" th:text="#{user.edit}"></a></td>-->
+<!--          &lt;!&ndash;        <td><a th:href="${'/admin/user/delete/' + user.id}" th:text="#{user.delete}"></a></td>&ndash;&gt;-->
+<!--          <td sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--            <div class="form-check">-->
+<!--              <input type="checkbox" class="form-check-input" name="usersToDelete" th:value="${user.id}" />-->
+<!--              <label class="form-check-label"></label>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+      <table class="table table-hover" th:fragment="usersTable" id="usersTable" th:replace="user/usersTable"/>
+      <button sec:authorize="hasRole('ROLE_ADMIN')"
+              type="submit" class="btn btn-danger" id="deleteButton"  disabled="disabled" th:text="#{user.delete}"></button>
+      <footer th:replace="fragments/pagination"></footer>
+    </form>
+
+  </div>
+</div>
+<footer th:replace="fragments/footer"/>
+</body>
+<script sec:authorize="hasRole('ROLE_ADMIN')">
+  $(document).ready(function() {
+    $('#selectAll').change(function() {
+      $('input[name="usersToDelete"]').prop('checked', this.checked);
+      updateDeleteButton();
+    });
+    $('input[name="usersToDelete"]').change(function() {
+      updateDeleteButton();
+    });
+    function updateDeleteButton() {
+      var count = $('input[name="usersToDelete"]:checked').length;
+      $('#deleteButton').prop('disabled', count == 0);
+    }
+  });
+</script>
+</html>

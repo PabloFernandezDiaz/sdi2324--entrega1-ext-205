@@ -1,0 +1,42 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"></head>
+<body>
+
+<!-- Barra de Navegación superior -->
+<nav th:replace="fragments/nav"></nav>
+
+<div class="container" id="main-container">
+    <h2 th:text="#{user.detailsTitle}">Detalles del usuario</h2>
+    <div class="card">
+        <div class="card-header"th:text="#{user.email}"></div>
+        <div class="card-body">
+            <p class="card-text"  th:text="${user.email}" > Ejercicio 1</p>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header"th:text="#{user.name}"></div>
+        <div class="card-body">
+            <p class="card-text" th:text="${user.name}" >100</p>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header"th:text="#{user.lastname}"></div>
+        <div class="card-body">
+            <p class="card-text" th:text="${user.lastName}" >100</p>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header"th:text="#{user.role}"></div>
+        <div class="card-body">
+            <p class="card-text" th:text="${user.role}" >100</p>
+        </div>
+    </div>
+    <br>
+</div>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

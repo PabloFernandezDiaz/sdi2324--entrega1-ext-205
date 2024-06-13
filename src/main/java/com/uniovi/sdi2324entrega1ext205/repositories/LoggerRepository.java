@@ -7,6 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface LoggerRepository extends CrudRepository<LoggerEntry, Long> {
+
+
     List<LoggerEntry> findAllByOrderByDateDesc();
     List<LoggerEntry> findAllByLoggerTypeOrderByDateDesc(LoggerEntry.LoggerType type);
 

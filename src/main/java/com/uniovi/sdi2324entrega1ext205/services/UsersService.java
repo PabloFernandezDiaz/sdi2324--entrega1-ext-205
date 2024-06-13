@@ -9,20 +9,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UsersService {
     private final UsersRepository usersRepository;
+    
+    private final RolesService rolesService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UsersService(UsersRepository usersRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UsersService(UsersRepository usersRepository, RolesService rolesService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.usersRepository = usersRepository;
+        this.rolesService = rolesService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public Page<User> getUsers(Pageable pageable, String email, String role){
-        return usersRepository.findAllByUser(pageable, email, role);
+        if( role.equals(rolesService.getRoles()[1]))
+            return getAllUsers( pageable);
+        return usersRepository.findAllByEmailNotAndRole(pageable, email, role);
     }
-    public Page<User> getUsers(Pageable pageable){
+    public Page<User> getAllUsers(Pageable pageable){
         return usersRepository.findAll(pageable);
     }
     public List<User> getUsers() {
@@ -35,14 +42,22 @@ public class UsersService {
         usersRepository.save(user);
     }
     public Page<User> searchUserByEmailNameAndLastname(Pageable pageable, String searchText, String email, String role){
-        Page<User> users;
         searchText = "%" + searchText + "%";
-        users = usersRepository.searchByEmailNameAndLastname(pageable, searchText, email, role);
+        Page<User> users = usersRepository.searchByEmailNameAndLastname(pageable, searchText, email, rolesService.getRoles()[0]);
+        if (  role.equals(rolesService.getRoles()[1])){
+            users = usersRepository
+                    .findAllByEmailLikeIgnoreCaseOrNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(pageable
+                            ,searchText, searchText, searchText);
+        }
+
         return users;
     }
 
     public User getUserByEmail(String email) {
         return usersRepository.findByEmail(email);
+    }
+    public User getUserById(Long id) {
+        return usersRepository.findById(id).get();
     }
 
     public User getUser(Long id) {

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="fragments/head"></head>
+<nav th:replace="fragments/nav"></nav>
+<body>
+<div class="container">
+    <h2> <span th:text="#{friendship.friends}"></span> </h2>
+    <p><span th:text="#{friendship.friends.description}"></span> </p>
+    <div class="table-responsive">
+        <table class="table table-hover" th:fragment="friendshipsTable" id="friendshipsTable">
+            <thead>
+            <tr>
+                <th scope="col" th:text="#{friend.email}"></th>
+                <th scope="col" th:text="#{friend.name}"></th>
+                <th scope="col" th:text="#{friend.lastname}"></th>
+                <th scope="col" th:text="#{friend.startDate}"></th>
+                <th scope="col" th:text="#{friend.lastPublication}"></th>
+                <th scope="col" th:text="#{friend.profile}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="friends" th:each="friendship : ${friendshipsList}">
+                <td>
+                    <div th:if="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.receiver.email}"></a>
+                    </div>
+                    <div th:unless="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.sender.email}"></a>
+                    </div>
+                </td>
+                <td>
+                    <div th:if="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.receiver.name}"></a>
+                    </div>
+                    <div th:unless="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.sender.name}"></a>
+
+                    </div>
+                </td>
+                <td>
+                    <div th:if="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.receiver.lastName}"></a>
+                    </div>
+                    <div th:unless="${friendship.isSender(currentUser)}">
+                        <a th:text="${friendship.sender.lastName}"></a>
+
+                    </div>
+                </td>
+                <td><a th:text="${friendship.acceptanceDate}"></a></td>
+                <td>
+                    <div th:if="${friendship.isSender(currentUser)}">
+                        <div th:unless="${friendship.receiver.getPosts().isEmpty()}">
+                            <a th:text="${friendship.receiver.getLastPost().getTitle()}/n"></a>
+                            <br>
+                            <a th:text="${friendship.receiver.getLastPost().getDescription()}"></a>
+                        </div>
+                        <div th:if="${friendship.receiver.getPosts().isEmpty()}">
+                            <a th:text="#{friend.no.publication}"></a>
+                        </div>
+                    </div>
+                    <div th:unless="${friendship.isSender(currentUser)}">
+                        <div th:unless="${friendship.sender.getPosts().isEmpty()}">
+                            <a th:text="${friendship.sender.getLastPost().getTitle()}"></a>
+                            <br>
+                            <a th:text="${friendship.sender.getLastPost().getDescription()}"></a>
+                        </div>
+                        <div th:if="${friendship.sender.getPosts().isEmpty()}">
+                            <a th:text="#{friend.no.publication}"></a>
+                        </div>
+
+                    </div>
+                </td>
+                <td>
+                    <div th:if="${friendship.isSender(currentUser)}">
+                        <a th:href="@{/user/{id} (id=${friendship.receiver.id})}"
+                        th:text="#{friend.profile}"></a>
+                    </div>
+                    <div th:unless="${friendship.isSender(currentUser)}">
+                        <a th:href="@{/user/{id} (id=${friendship.sender.id})}"
+                           th:text="#{friend.profile}"></a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <footer th:replace="fragments/pagination"></footer>
+    </div>
+</div>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

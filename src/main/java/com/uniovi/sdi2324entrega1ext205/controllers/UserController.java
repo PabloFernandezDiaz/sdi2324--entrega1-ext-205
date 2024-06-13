@@ -1,40 +1,100 @@
 package com.uniovi.sdi2324entrega1ext205.controllers;
 
-import com.uniovi.sdi2324entrega1ext205.entities.LoggerEntry;
-import com.uniovi.sdi2324entrega1ext205.entities.User;
-import com.uniovi.sdi2324entrega1ext205.services.LoggerService;
-import com.uniovi.sdi2324entrega1ext205.services.RolesService;
-import com.uniovi.sdi2324entrega1ext205.services.SecurityService;
-import com.uniovi.sdi2324entrega1ext205.services.UsersService;
+import com.uniovi.sdi2324entrega1ext205.entities.*;
+import com.uniovi.sdi2324entrega1ext205.services.*;
 import com.uniovi.sdi2324entrega1ext205.validators.SignUpFormValidator;
+import com.uniovi.sdi2324entrega1ext205.validators.UserProfileAccessValidator;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Validate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserController {
 
     private final SignUpFormValidator signUpFormValidator;
 
+    private final UserProfileAccessValidator userProfileAccessValidator;
+
     private final RolesService rolesService;
     private final UsersService usersService;
 
     private final SecurityService securityService;
+    private final PostsService postsService;
     private final LoggerService loggerService;
 
-    public UserController(SignUpFormValidator signUpFormValidator, RolesService rolesService, UsersService usersService
-            , SecurityService securityService, LoggerService loggerService) {
+    private final FriendshipService friendshipService;
+   //private String lastST; //TODO BUSCAR FORMA DE DESACERSE DE ESTA VARIABLE
+
+    public UserController(SignUpFormValidator signUpFormValidator, UserProfileAccessValidator userProfileAccessValidator, RolesService rolesService, UsersService usersService
+            , SecurityService securityService, PostsService postsService, LoggerService loggerService, FriendshipService friendshipService) {
         this.signUpFormValidator = signUpFormValidator;
+        this.userProfileAccessValidator = userProfileAccessValidator;
+
         this.rolesService = rolesService;
         this.usersService = usersService;
         this.securityService = securityService;
+        this.postsService = postsService;
         this.loggerService = loggerService;
+        this.friendshipService = friendshipService;
+    }
+
+    @RequestMapping("/user/list")
+    public String getListado(Model model, Pageable pageable, @RequestParam(value="", required = false) String searchText) {
+        Page<User> userList = usersService.getAllUsers(pageable);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User activeUser = usersService.getUserByEmail(auth.getName());
+        String lastSearch="";
+        if(searchText!= null)
+            lastSearch = searchText;
+        if(lastSearch != null && !lastSearch.isEmpty()){
+            userList = usersService.searchUserByEmailNameAndLastname(pageable, lastSearch, activeUser.getEmail(), activeUser.getRole());
+        }
+        else {
+            userList = usersService.getUsers(pageable, activeUser.getEmail(), activeUser.getRole());
+        }
+
+        List<UserFriendship> userDtos = new ArrayList<>(); //TODO BUSCAR FORMA DE DESACERSE DE ESTA CLASE
+        Page<Friendship> test = friendshipService.getAllFriendshipsByUser(pageable, activeUser);
+
+
+        for (User user : userList.getContent()) {
+            Friendship f =  friendshipService.getFriendship(activeUser, user);
+            UserFriendship userDto = new UserFriendship();
+            userDto.setId(user.getId());
+            userDto.setName(user.getName());
+            userDto.setEmail(user.getEmail());
+            userDto.setRole(user.getRole());
+            userDto.setLastName(user.getLastName());
+            userDto.setHasFriendship(f!=null);
+            if(f==null){
+                userDto.setSameUser(user.equals(activeUser));
+            }
+            else{
+                userDto.setAccepted(!friendshipService.isPending(f));
+            }
+
+            userDtos.add(userDto);
+        }
+
+        //model.addAttribute("usersList", curatedList.getContent());
+        model.addAttribute("page", userList);
+        model.addAttribute("usersList",userDtos);
+        model.addAttribute("searchText", lastSearch);
+        return "user/list";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -67,5 +127,36 @@ public class UserController {
         securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
         loggerService.addEntry(request.getMethod()+request.getRequestURI(), LoggerEntry.LoggerType.ALTA);
         return "redirect:home";
+    }
+
+    @RequestMapping("/user/{id}")
+    public String getUserProfile(@PathVariable Long id, Model model, Principal principal, Pageable pageable, HttpServletResponse response) throws IOException {
+
+        User friend = usersService.getUser(id);
+        String email = principal.getName();
+        User user = usersService.getUserByEmail(email);
+
+        System.out.println(user.getId());
+        if(friend == null){
+            response.sendError(403);
+        }
+        if(user.getRole().equals(rolesService.getRoles()[0])){
+            if(!friendshipService.areFriends(user,friend)){
+                response.sendError(403);
+                //errors.reject("403");
+            }
+        }
+//        if (!friendshipService.areFriends(user, friend)) {
+//            //throw  new IllegalAccessException();
+//            return "403";
+//            //return "error/403";
+//        }
+
+        Page<Post> posts;
+        posts = postsService.getPostsForUser(friend, pageable);
+        model.addAttribute("friend", friend);
+        model.addAttribute("postsList", posts.getContent());
+        model.addAttribute("page", posts);
+        return "friend/list";
     }
 }

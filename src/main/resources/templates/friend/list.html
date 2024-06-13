@@ -1,0 +1,18 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"></head>
+<body>
+<nav th:replace="fragments/nav"></nav>
+<div class="container" id="main-container">
+    <h1 th:text="${friend.name}"></h1>
+    <h3 th:text="${friend.lastName}"></h3>
+    <h3 th:text="${friend.email}"></h3>
+    <h2>Publicaciones</h2>
+    <div class="table-responsive">
+        <table class="table table-hover" th:fragment="postsTable" id="postsTable" th:replace="fragments/postsTable" />
+        <footer th:replace="fragments/pagination" />
+    </div>
+</div>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

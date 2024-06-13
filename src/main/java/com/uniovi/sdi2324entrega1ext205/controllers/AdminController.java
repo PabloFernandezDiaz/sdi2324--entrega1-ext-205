@@ -40,7 +40,7 @@ public class AdminController {
     }
     @RequestMapping("/admin/user/list")
     public String getListado(Model model, Pageable pageable) {
-        Page<User> userList = usersService.getUsers(pageable);
+        Page<User> userList = usersService.getAllUsers(pageable);
         model.addAttribute("usersList", userList.getContent());
         model.addAttribute("page", userList);
         return "user/list";
