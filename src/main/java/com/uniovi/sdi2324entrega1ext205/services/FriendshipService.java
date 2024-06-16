@@ -51,6 +51,7 @@ public class FriendshipService {
     }
 
     public void addFriendship(Friendship f) {
+        //if(areFriends(f.getSender(),f.getReceiver()))
         friendshipRepository.save(f);
     }
 

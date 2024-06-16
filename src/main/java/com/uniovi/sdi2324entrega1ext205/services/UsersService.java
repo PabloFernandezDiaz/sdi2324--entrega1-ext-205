@@ -1,6 +1,8 @@
 package com.uniovi.sdi2324entrega1ext205.services;
 
+import com.uniovi.sdi2324entrega1ext205.entities.Friendship;
 import com.uniovi.sdi2324entrega1ext205.entities.User;
+import com.uniovi.sdi2324entrega1ext205.entities.UserFriendship;
 import com.uniovi.sdi2324entrega1ext205.repositories.UsersRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,19 +11,47 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsersService {
     private final UsersRepository usersRepository;
     
     private final RolesService rolesService;
+
+    private final FriendshipService friendshipService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UsersService(UsersRepository usersRepository, RolesService rolesService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UsersService(UsersRepository usersRepository, RolesService rolesService, FriendshipService friendshipService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.usersRepository = usersRepository;
         this.rolesService = rolesService;
+        this.friendshipService = friendshipService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+
+    public List<UserFriendship> getUserFriendship(User activeUser,Page<User> userList){
+        List<UserFriendship> userFriendshipList = new ArrayList<>();
+
+
+        for (User user : userList.getContent()) {
+            Friendship f =  friendshipService.getFriendship(activeUser, user);
+            UserFriendship userDto = new UserFriendship();
+            userDto.setId(user.getId());
+            userDto.setName(user.getName());
+            userDto.setEmail(user.getEmail());
+            userDto.setRole(user.getRole());
+            userDto.setLastName(user.getLastName());
+            userDto.setHasFriendship(f!=null);
+            if(f==null){
+                userDto.setSameUser(user.equals(activeUser));
+            }
+            else{
+                userDto.setAccepted(!friendshipService.isPending(f));
+            }
+
+            userFriendshipList.add(userDto);
+        }
+        return  userFriendshipList;
     }
 
     public Page<User> getUsers(Pageable pageable, String email, String role){

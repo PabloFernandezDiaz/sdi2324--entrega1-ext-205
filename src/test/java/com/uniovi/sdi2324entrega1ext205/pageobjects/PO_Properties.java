@@ -1,4 +1,4 @@
-package com.uniovi.sdi2324entrega1ext205;
+package com.uniovi.sdi2324entrega1ext205.pageobjects;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -13,10 +13,23 @@ public class PO_Properties {
         return ENGLISH;
     }
 
+    public static int getFRENCH() {
+        return ENGLISH;
+    }
+
+    public static Locale[] getIDIOMS() {
+
+        return idioms;
+    }
+
     static private String Path;
     static final int SPANISH = 0;
     static final int ENGLISH = 1;
-    static final Locale[] idioms = new Locale[] {new Locale("ES"), new Locale("EN")};
+    static final int FRENCH = 2;
+    static final Locale[] idioms = new Locale[] {new Locale("ES"), new Locale("EN")
+            , new Locale("FR")};
+    static final Locale[] idiomsBtn = new Locale[] {new Locale("ES"), new Locale("EN")
+            , new Locale("FR")};
     public PO_Properties(String Path) {
         PO_Properties.Path = Path;
     }

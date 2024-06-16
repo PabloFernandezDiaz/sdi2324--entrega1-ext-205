@@ -9,9 +9,9 @@
   </button>
   <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="navbar-nav mr-auto" >
-      <li class="nav-item " sec:authorize="isAuthenticated()" >
-        <a class="nav-link" href="/home">Home<span class="sr-only">(current)</span></a>
-      </li>
+<!--      <li class="nav-item " sec:authorize="isAuthenticated()" >-->
+<!--        <a class="nav-link" href="/home">Home<span class="sr-only">(current)</span></a>-->
+<!--      </li>-->
       <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="btnPost" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
@@ -38,12 +38,12 @@
             </div>
         </li>
       <li  class="nav-item dropdown" sec:authorize="isAuthenticated()">
-        <a class="nav-link dropdown-toggle" href="#" id="frienshipDropdown" role="button" data-toggle="dropdown"
+        <a class="nav-link dropdown-toggle" href="#" id="friendshipDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" th:text="#{friendship}">
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/friendship/request/list" th:text="#{friendship.requests}" ></a>
-          <a class="dropdown-item" href="/friendship/list" th:text="#{friendship.friends}" ></a>
+          <a class="dropdown-item" href="/friendship/request/list" id="friendshipRequestList" th:text="#{friendship.requests}" ></a>
+          <a class="dropdown-item" href="/friendship/list" id="friendshipList" th:text="#{friendship.friends}" ></a>
         </div>
       </li>
       <li class="nav-item "  sec:authorize="hasRole('ROLE_ADMIN')" >
@@ -64,6 +64,10 @@
           <a class="dropdown-item" id="btnSpanish" value="ES">
             <img th:src="@{/images/if_spain_flag.png}" style="border: 0; float: left; margin-right: 15px"/>
             <span th:text="#{language.es}">Español</span>
+          </a>
+          <a class="dropdown-item" id="btnFrench" value="FR">
+            <img th:src="@{/images/french.png}" style="border: 0; float: left; margin-right: 15px"/>
+            <span th:text="#{language.fr}">Español</span>
           </a>
         </div>
       </li>

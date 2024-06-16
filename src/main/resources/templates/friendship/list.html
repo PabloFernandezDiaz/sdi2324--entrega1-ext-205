@@ -43,8 +43,7 @@
                     </div>
                     <div th:unless="${friendship.isSender(currentUser)}">
                         <a th:text="${friendship.sender.lastName}"></a>
-
-                    </div>
+                     </div>
                 </td>
                 <td><a th:text="${friendship.acceptanceDate}"></a></td>
                 <td>

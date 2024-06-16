@@ -1,4 +1,4 @@
-package com.uniovi.sdi2324entrega1ext205;
+package com.uniovi.sdi2324entrega1ext205.pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

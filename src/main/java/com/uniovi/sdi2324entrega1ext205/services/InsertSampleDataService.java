@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Random;
 
 @Service
 public class InsertSampleDataService {
@@ -27,21 +29,54 @@ public class InsertSampleDataService {
     @PostConstruct
     public void init() {
 
-        User admin = new User("admin@email.com", "Admin", "User",
-                rolesService.getRoles()[0], "@Dm1n1str@D0r", "@Dm1n1str@D0r");
+        User admin = new User("admin@email.com", "Admin", "Admin",
+                rolesService.getRoles()[1], "@Dm1n1str@D0r", "@Dm1n1str@D0r");
         usersService.addUser(admin);
+
+
+        User[] userList = new User[19];
 
         for (int i = 1; i < 20; i++) {
             String userIndex = String.format("%02d", i);
             User user = new User("user" + userIndex + "@email.com", "name" + userIndex, "lastname" + userIndex,
-                    rolesService.getRoles()[1], "Us3r@" + i + "-PASSW", "Us3r@" + i + "-PASSW");
+                    rolesService.getRoles()[0], "Us3r@" + i + "-PASSW", "Us3r@" + i + "-PASSW");
 
             usersService.addUser(user);
+            userList[i-1]=user;
             for (int j = 1; j < 20; j++) {
-                Post post = new Post("Post " + j, "descripcion " + j, user);
+                Post post = new Post("Post " + j, "description " + j, user);
                 postsService.addPost(post);
             }
         }
+        for (int i =2 ; i <10 ;i++){
+            Friendship friendship = new Friendship(userList[i], userList[0], friendshipService.states[1]);
+            friendshipService.addFriendship(friendship);
+        }
+        for (int i =10 ; i <17;i++){
+            Friendship friendship = new Friendship(userList[i], userList[0], friendshipService.states[0]
+                    ,new Date(System.currentTimeMillis()));
+            friendshipService.addFriendship(friendship);
+        }
+
+        //generar peticiones de amistad aleatorias con misma semilla para que siempre de lo mismo
+//        Random random = new Random(123456789);
+//        for (int i = 1; i < userList.length; i++) {
+//            int numberOfFriends = random.nextInt(5) + 1;
+//            for (int j = 0; j < numberOfFriends; j++) {
+//                int friendIndex = random.nextInt(userList.length);
+//                while (friendIndex == i || userList[friendIndex] == null ) {
+//                    friendIndex = random.nextInt(userList.length);
+//                }
+//                User friend = userList[friendIndex];
+//                if(friendshipService.getFriendship(friend,userList[i]) == null) {
+//                    Friendship friendship = new Friendship(userList[i], friend, friendshipService.states[1]);
+//                    friendshipService.addFriendship(friendship);
+//                }
+//            }
+//        }
+
+
+
         User user1 = new User("ana@gmail.com","Ana", "García",rolesService.getRoles()[0],"123456","123456");
         User user2 = new User("juan@gmail.com","Juan", "Pérez",rolesService.getRoles()[0],"123456","123456");
         User user3 = new User("jorge@gmail.com","Jorge", "Fernández",rolesService.getRoles()[0],"123456","123456");
@@ -74,8 +109,8 @@ public class InsertSampleDataService {
         friendshipService.addFriendship(f6);
         friendshipService.addFriendship(f7);
         friendshipService.addFriendship(f8);
-        usersService.addUser(new User("admin@email.com","AdminName","AdminLastname"
-                ,rolesService.getRoles()[1],"@Dm1n1str@D0r","@Dm1n1str@D0r"));
+//        usersService.addUser(new User("admin@email.com","AdminName","AdminLastname"
+//                ,rolesService.getRoles()[1],"@Dm1n1str@D0r","@Dm1n1str@D0r"));
         usersService.addUser(new User("admin","Admin","Admin"
                 ,rolesService.getRoles()[1],"123456","123456"));
     }

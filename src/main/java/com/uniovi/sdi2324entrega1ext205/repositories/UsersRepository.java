@@ -21,6 +21,7 @@ public interface UsersRepository extends CrudRepository<User, Long> {
     Page<User> findAllByEmailNotAndRole(Pageable pageable, String email, String role);
 
     Page<User> findAll(Pageable pageable);
+    List<User> findAllByRoleNot(String role);
 
     @Query("SELECT u FROM User u WHERE (LOWER(u.email) LIKE LOWER(?1) OR LOWER(u.name) LIKE LOWER(?1) OR LOWER(u.lastName) LIKE LOWER(?2)) AND (u.email != ?1 AND u.role = ?3)")
     Page<User> searchByEmailNameAndLastname(Pageable pageable, String searchText, String email, String role);

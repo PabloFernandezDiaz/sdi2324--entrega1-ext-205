@@ -67,30 +67,8 @@ public class UserController {
             userList = usersService.getUsers(pageable, activeUser.getEmail(), activeUser.getRole());
         }
 
-        List<UserFriendship> userDtos = new ArrayList<>(); //TODO BUSCAR FORMA DE DESACERSE DE ESTA CLASE
+        List<UserFriendship> userDtos = usersService.getUserFriendship(activeUser,userList);
         Page<Friendship> test = friendshipService.getAllFriendshipsByUser(pageable, activeUser);
-
-
-        for (User user : userList.getContent()) {
-            Friendship f =  friendshipService.getFriendship(activeUser, user);
-            UserFriendship userDto = new UserFriendship();
-            userDto.setId(user.getId());
-            userDto.setName(user.getName());
-            userDto.setEmail(user.getEmail());
-            userDto.setRole(user.getRole());
-            userDto.setLastName(user.getLastName());
-            userDto.setHasFriendship(f!=null);
-            if(f==null){
-                userDto.setSameUser(user.equals(activeUser));
-            }
-            else{
-                userDto.setAccepted(!friendshipService.isPending(f));
-            }
-
-            userDtos.add(userDto);
-        }
-
-        //model.addAttribute("usersList", curatedList.getContent());
         model.addAttribute("page", userList);
         model.addAttribute("usersList",userDtos);
         model.addAttribute("searchText", lastSearch);
@@ -126,7 +104,7 @@ public class UserController {
         usersService.addUser(user);
         securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
         loggerService.addEntry(request.getMethod()+request.getRequestURI(), LoggerEntry.LoggerType.ALTA);
-        return "redirect:home";
+        return "redirect:/user/list";
     }
 
     @RequestMapping("/user/{id}")
@@ -146,12 +124,6 @@ public class UserController {
                 //errors.reject("403");
             }
         }
-//        if (!friendshipService.areFriends(user, friend)) {
-//            //throw  new IllegalAccessException();
-//            return "403";
-//            //return "error/403";
-//        }
-
         Page<Post> posts;
         posts = postsService.getPostsForUser(friend, pageable);
         model.addAttribute("friend", friend);

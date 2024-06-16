@@ -8,9 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface PostsRepository extends CrudRepository<Post, Long> {
     @Query("SELECT r FROM Post r WHERE r.user = ?1 ORDER BY r.id ASC")
     Page<Post> findAllByUser(User user, Pageable pageable);
+
+    List<Post> findAllByUser(User user);
 
     Page<Post> findAll(Pageable pageable);
 }

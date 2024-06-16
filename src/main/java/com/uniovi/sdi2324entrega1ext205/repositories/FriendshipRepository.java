@@ -30,6 +30,7 @@ public interface FriendshipRepository extends CrudRepository<Friendship, Long> {
     @Query("SELECT f FROM  Friendship f WHERE f.receiver = ?1 AND f.state=?2")
     Page<Friendship> findAllByReceiverAndState(Pageable pageable, User user, String state);
 
+    List<Friendship> findAllByReceiverAndState(User user, String state);
     @Query("SELECT f FROM  Friendship f WHERE (f.sender = ?1 OR f.receiver = ?1) AND f.state=?2")
     Page<Friendship> findAllByUserAndState(Pageable pageable, User user, String state);
 }

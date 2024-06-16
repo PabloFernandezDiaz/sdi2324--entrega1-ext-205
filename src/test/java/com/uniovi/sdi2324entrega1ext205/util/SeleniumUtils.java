@@ -1,4 +1,4 @@
-package com.uniovi.sdi2324entrega1ext205;
+package com.uniovi.sdi2324entrega1ext205.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;

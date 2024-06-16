@@ -27,7 +27,7 @@ public class CustomAuthenSuccesHandler implements AuthenticationSuccessHandler {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         loggerService.addEntry(username, LoggerEntry.LoggerType.LOGIN_EX);
-        response.sendRedirect("/home");
+        response.sendRedirect("/user/list");
     }
 
 }
