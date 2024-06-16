@@ -3,8 +3,6 @@ package com.uniovi.sdi2324entrega1ext205.controllers;
 import com.uniovi.sdi2324entrega1ext205.entities.*;
 import com.uniovi.sdi2324entrega1ext205.services.*;
 import com.uniovi.sdi2324entrega1ext205.validators.SignUpFormValidator;
-import com.uniovi.sdi2324entrega1ext205.validators.UserProfileAccessValidator;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Validate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -19,15 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
 
     private final SignUpFormValidator signUpFormValidator;
-
-    private final UserProfileAccessValidator userProfileAccessValidator;
 
     private final RolesService rolesService;
     private final UsersService usersService;
@@ -37,13 +32,10 @@ public class UserController {
     private final LoggerService loggerService;
 
     private final FriendshipService friendshipService;
-   //private String lastST; //TODO BUSCAR FORMA DE DESACERSE DE ESTA VARIABLE
 
-    public UserController(SignUpFormValidator signUpFormValidator, UserProfileAccessValidator userProfileAccessValidator, RolesService rolesService, UsersService usersService
+    public UserController(SignUpFormValidator signUpFormValidator,  RolesService rolesService, UsersService usersService
             , SecurityService securityService, PostsService postsService, LoggerService loggerService, FriendshipService friendshipService) {
         this.signUpFormValidator = signUpFormValidator;
-        this.userProfileAccessValidator = userProfileAccessValidator;
-
         this.rolesService = rolesService;
         this.usersService = usersService;
         this.securityService = securityService;

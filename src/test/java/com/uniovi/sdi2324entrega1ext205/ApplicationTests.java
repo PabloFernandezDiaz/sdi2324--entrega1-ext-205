@@ -46,12 +46,15 @@ class ApplicationTests {
 
 
     static String PathFirefox = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
-    //static String Geckodriver = "C:\\Users\\adria\\Downloads\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
-    //static String Geckodriver ="";
-    //static String Geckodriver ="F:\\Documentos\\Clase\\SDI\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
-    //static String Geckodriver = "C:\\Users\\adria\\Downloads\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
-    //static String Geckodriver = "C:\\Users\\carol\\Escritorio\\Clase\\tercero\\segundo cuatri\\SDI\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
-    static String Geckodriver = "F:\\uni\\2023-2024\\sdi\\projectos\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
+
+    static String Geckodriver= "F:\\uni\\2023-2024\\sdi\\projectos\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
+    //"F:\\uni\\2023-2024\\sdi\\projectos\\PL-SDI-Sesión5-material\\geckodriver-v0.30.0-win64.exe";
+//    @Value("${custom.fileTest}")
+//    public void setGeckodriverPath(String path) {
+//        Geckodriver = path;
+//    }
+//    @Value("${custom.fileTest}")
+//    private String Geckodriver2 ;
     @Value("${spring.data.web.pageable.size-parameter}")
     private int pageSize;
     static WebDriver driver = getDriver(PathFirefox, Geckodriver);
@@ -369,7 +372,7 @@ class ApplicationTests {
     }
 
     @Test
-    @Order(17) //TODO MEJORABLE solo compruebo el numero de usuarios no su contenido
+    @Order(17)
     void PR17() {
         PO_LoginView.login(driver, "user01@email.com", "Us3r@1-PASSW","Usuarios");
         PO_NavView.clickOption(driver, "user/list", "class", "btn btn-primary");
@@ -476,14 +479,11 @@ class ApplicationTests {
     }
 
     @Test
-    @Order(21)//TODO revisar
+    @Order(21)
     public void PR21(){
         PO_LoginView.login(driver, "user01@email.com", "Us3r@1-PASSW","Usuarios");
         //Acceder a la pantalla de usuarios
-//        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "//*[@id='myNavbar']/ul[1]/li[3]");
-//        elements.get(0).click();
         PO_NavView.clickOption(driver, "user/list", "class", "btn btn-primary");
-
         //Enviar solicitud de amistad al usuario con correo test1@email.com
         By enlace = By.xpath("//td[contains(text(), 'user02@email.com')]/following-sibling::*[3]");
         driver.findElement(enlace).click();
@@ -494,12 +494,7 @@ class ApplicationTests {
         //Acceder a las solicitudes de amistad
         PO_View.checkElementByAndClick(driver, "id", "friendshipDropdown");
         PO_View.checkElementByAndClick(driver, "id", "friendshipRequestList");
-//        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "//*[@id='myNavbar']/ul[1]/li[4]");
-//        elements.get(0).click();
-//
-//        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'friendship/request/list')]");
-//        elements.get(0).click();
-        //Buscar test0@email.com entre las solicitudes
+        //Buscar user01@email.com entre las solicitudes
         enlace = By.xpath("//td[contains(text(), 'user01@email.com')]");
         //Comprobar que la solicitud se encuentra en la tabla
         Assertions.assertNotNull(driver.findElement(enlace));

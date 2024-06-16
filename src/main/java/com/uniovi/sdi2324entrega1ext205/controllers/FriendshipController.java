@@ -1,6 +1,5 @@
 package com.uniovi.sdi2324entrega1ext205.controllers;
 
-
 import com.uniovi.sdi2324entrega1ext205.entities.Friendship;
 import com.uniovi.sdi2324entrega1ext205.entities.User;
 import com.uniovi.sdi2324entrega1ext205.services.FriendshipService;

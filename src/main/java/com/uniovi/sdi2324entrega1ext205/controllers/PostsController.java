@@ -48,7 +48,7 @@ public class PostsController {
         Date now = new Date();
         post.setDate(now);
         postsService.addPost(post);
-        return "redirect:/post/list"; //cambiar esto para redirigir, por ejemplo, a la lista de publicaciones propias
+        return "redirect:/post/list";
     }
     @RequestMapping(value = "/post/add")
     public String getPost(Model model) {
