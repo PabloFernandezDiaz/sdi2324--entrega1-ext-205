@@ -4,7 +4,7 @@
 <nav th:replace="fragments/nav"></nav>
 <body>
 <div class="container">
-    <h2> <span th:text="#{friendship.friends}"></span> </h2>
+    <h2> <span>Amigos favoritos</span> </h2>
     <p><span th:text="#{friendship.friends.description}"></span> </p>
     <div class="table-responsive">
         <table class="table table-hover" th:fragment="friendshipsTable" id="friendshipsTable">
@@ -80,18 +80,9 @@
                            th:text="#{friend.profile}"></a>
                     </div>
                 </td>
-                <td>
-                    <form method="post" action="/friendship/list/fav" th:object="${fid}" th:if ="${!currentUser.isInFavFriend(friendship)}">
-<!--                        th:object="${friendship}"-->
-                        <input hidden="true" id="fid" name="fid" type="text" th:value="${friendship.id}">
-                    <button  type="submit" id="btn btn-primary" class="btn btn-danger"
-                    >agregar a favoritos</button>
-                    </form>
-                </td>
             </tr>
             </tbody>
         </table>
-        <footer th:replace="fragments/pagination"></footer>
     </div>
 </div>
 <footer th:replace="fragments/footer"></footer>

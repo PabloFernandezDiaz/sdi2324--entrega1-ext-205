@@ -11,8 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class FriendshipController {
@@ -66,7 +68,28 @@ public class FriendshipController {
         model.addAttribute("page",friendshipList);
         return "friendship/list";
     }
-
+    @RequestMapping(value = "/friendship/list/fav", method = RequestMethod.GET)
+    public String getFavFriendList(Model model, Pageable pageable, Principal principal){
+        User user =usersService.getUserByEmail(principal.getName());
+        List<Friendship> friendshipList = friendshipService.getFavFriends(user);
+        model.addAttribute("currentUser",user);
+        model.addAttribute("friendshipsList",friendshipList);
+        return "friendship/listFav";
+    }
+//http://localhost:8090/friendship/list
+//@RequestParam("id") Long id
+    @RequestMapping(value = "/friendship/list/fav", method = RequestMethod.POST)
+    public String getAddFavoriteFriend(Model model,@RequestParam("fid") String id ,Pageable pageable, Principal principal){
+        User user =usersService.getUserByEmail(principal.getName());
+        Friendship friendship = friendshipService.getFriendship(id);
+        if(user.isInFavFriend(friendship)){
+            return "redirect:/friendship/list";
+        }
+        else {
+            friendshipService.addFavoriteFriendship(user, friendship);
+            return "redirect:/friendship/list/fav";
+        }
+    }
     @RequestMapping(value = "/friendship/list/update", method = RequestMethod.GET)
     public String updateFriendList(Model model, Pageable pageable, Principal principal){
         User user =usersService.getUserByEmail(principal.getName());

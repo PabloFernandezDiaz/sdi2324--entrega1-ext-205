@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FriendshipService {
@@ -36,6 +38,10 @@ public class FriendshipService {
 
         return friendshipRepository.findByUsers(user, user2);
     }
+    public Friendship getFriendship(String id) {
+
+        return friendshipRepository.findById(Long.valueOf(id)).get();
+    }
 
     public Friendship getFriendship(Long id) {
         return friendshipRepository.findById(id).get();
@@ -53,6 +59,18 @@ public class FriendshipService {
     public void addFriendship(Friendship f) {
         //if(areFriends(f.getSender(),f.getReceiver()))
         friendshipRepository.save(f);
+    }
+    public void addFavoriteFriendship(User user,Friendship f) {
+        user.getFavoriteFriends().add(f);
+        usersRepository.save(user);
+    }
+
+    public List<Friendship> getFavFriends(User user){
+        List<Friendship> list = new ArrayList<Friendship>();
+        for (Friendship f: user.getFavoriteFriends()) {
+            list.add(f);
+        }
+        return list;
     }
 
     public Page<Friendship> getReceivedPendingFriendshipsByUser(User user, Pageable pageable) {

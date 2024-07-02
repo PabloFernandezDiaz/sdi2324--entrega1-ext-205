@@ -44,6 +44,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="/friendship/request/list" id="friendshipRequestList" th:text="#{friendship.requests}" ></a>
           <a class="dropdown-item" href="/friendship/list" id="friendshipList" th:text="#{friendship.friends}" ></a>
+          <a class="dropdown-item" href="/friendship/list/fav" id="friendshipFavList" > Amigos favoritos</a>
         </div>
       </li>
       <li class="nav-item "  sec:authorize="hasRole('ROLE_ADMIN')" >

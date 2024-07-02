@@ -22,7 +22,8 @@ public class User {
     public String getFullname() {
         return fullname;
     }
-
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Friendship> favoriteFriends;
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private Set<Friendship> receivedFriendships;
 
@@ -173,6 +174,16 @@ public class User {
 //    }
     public Post getLastPost() {
         return this.posts.isEmpty() ? null : this.posts.iterator().next();
+    }
+
+    public Set<Friendship> getFavoriteFriends() {
+        return favoriteFriends;
+    }
+    public boolean isInFavFriend(Friendship f){
+        return this.getFavoriteFriends().contains(f);
+    }
+    public void setFavoriteFriends(Set<Friendship> favoriteFriends) {
+        this.favoriteFriends = favoriteFriends;
     }
 }
 
